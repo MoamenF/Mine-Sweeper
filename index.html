@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MineSweeper</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body onload="onInit()">
+    <h1>MINE SWEEPER</h1>
+    <div class="game-container">
+        
+        <div class="timer"><span>000</span></div>
+        <div class="levels-container">
+            <button onclick="setGameLevel(this)" class="level-btns beginner-btn">Beginner</button>
+            <button onclick="setGameLevel(this)" class="level-btns inter-btn">Intermediate</button>
+            <button onclick="setGameLevel(this)" class="level-btns expert-btn">Expert</button>
+        </div>
+
+        <div class="game-stats">
+            <div class="icons bomb-count-icon"><img src="img/bomb.svg" alt="bomb-Icon"><span>0</span></div>
+            <div class="icons flag-count-icon"><img src="img/flag.svg" alt="flag-Icon"><span>0</span></div>
+            
+            <div class="best-time">BEST:<span>000</span></div>
+            
+            <div class="hint-container">
+
+                <div class="hints hint-icon1"><img src="img/hint-inactive.svg" alt="heart-Icon"></div>
+                <div class="hints hint-icon2"><img src="img/hint-inactive.svg" alt="heart-Icon"></div>
+                <div class="hints hint-icon3"><img src="img/hint-inactive.svg" alt="heart-Icon"></div>
+
+            </div>
+ 
+        </div>
+
+        <div class="hearts-container">
+            <div class="hearts heart-icon3"><img src="img/heart.svg" alt="heart-Icon"></div>
+            <div class="hearts heart-icon2"><img src="img/heart.svg" alt="heart-Icon"></div>
+            <div class="hearts heart-icon1"><img src="img/heart.svg" alt="heart-Icon"></div>
+        </div>
+
+        <div><button onclick="resetGame()">Emoji</button></div>
+
+        <div class="board-container"></div>
+
+        <div class="assist-bar">
+            <button class="assist-btn">Safe Button</button>
+            <button class="assist-btn">Hint</button>
+            <button class="assist-btn">Undo</button>
+            <button class="assist-btn">Mega Hint</button>
+            <button class="assist-btn">KABOOM</button>
+
+            <div><button class="assist-btn">Custom Board</button></div>
+
+
+        </div>
+    </div>
+    
+
+    <script src="js/utils.js"></script>
+    <script src="js/mine-sweeper.js"></script>
+</body>
+
+<footer>Made by: Moamen F.</footer>
+
+</html>
