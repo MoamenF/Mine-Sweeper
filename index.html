@@ -11,8 +11,10 @@
 <body onload="onInit()">
     <h1>MINE SWEEPER</h1>
     <div class="game-container">
-        
-        <div class="timer"><span>000</span></div>
+
+        <div class="theme"><button class="theme-btn" onclick="darkModeToggle(this)"><img src="img/dark-mode.svg" alt=""></button></div>
+
+        <div class="timer"><span>00:00</span></div>
         <div class="levels-container">
             <button onclick="setGameLevel(this)" class="level-btns beginner-btn">Beginner</button>
             <button onclick="setGameLevel(this)" class="level-btns inter-btn">Intermediate</button>
@@ -20,16 +22,29 @@
         </div>
 
         <div class="game-stats">
-            <div class="icons bomb-count-icon"><img src="img/bomb.svg" alt="bomb-Icon"><span>0</span></div>
-            <div class="icons flag-count-icon"><img src="img/flag.svg" alt="flag-Icon"><span>0</span></div>
+
+            <div class="flag-bomb-container">
+
+                <div class="icons flag-count-icon"><img src="img/flag.svg" alt="flag-Icon"><span>0</span></div>
+                <div class="icons bomb-count-icon"><img src="img/bomb.svg" alt="bomb-Icon"><span>0</span></div>
+
+            </div>
             
-            <div class="best-time">BEST:<span>000</span></div>
+            <div class="best-time">Best Time<span>--:--</span></div>
             
             <div class="hint-container">
 
-                <div class="hints hint-icon1"><img src="img/hint-inactive.svg" alt="heart-Icon"></div>
-                <div class="hints hint-icon2"><img src="img/hint-inactive.svg" alt="heart-Icon"></div>
                 <div class="hints hint-icon3"><img src="img/hint-inactive.svg" alt="heart-Icon"></div>
+                <div class="hints hint-icon2"><img src="img/hint-inactive.svg" alt="heart-Icon"></div>
+                <div class="hints hint-icon1"><img src="img/hint-inactive.svg" alt="heart-Icon"></div>
+
+            </div>
+ 
+            <div class="safe-click-container">
+
+                <div class="safe-click hint-icon3"><img src="img/safeclick-icon.svg" alt="safeclick-Icon"></div>
+                <div class="safe-click hint-icon2"><img src="img/safeclick-icon.svg" alt="safeclick-Icon"></div>
+                <div class="safe-click hint-icon1"><img src="img/safeclick-icon.svg" alt="safeclick-Icon"></div>
 
             </div>
  
@@ -41,18 +56,24 @@
             <div class="hearts heart-icon1"><img src="img/heart.svg" alt="heart-Icon"></div>
         </div>
 
-        <div><button onclick="resetGame()">Emoji</button></div>
+        <div class="smiley-container">
+            <button class="smiley-btn" onclick="resetGame()"><img src="img/happy-closed-mouth-smiley.png" alt=""></button>
+            <button class="smiley-hands"><img src="img/smiley-hands.png" alt=""></button>
+        </div>
 
         <div class="board-container"></div>
 
         <div class="assist-bar">
-            <button class="assist-btn">Safe Button</button>
-            <button class="assist-btn">Hint</button>
-            <button class="assist-btn">Undo</button>
-            <button class="assist-btn">Mega Hint</button>
-            <button class="assist-btn">KABOOM</button>
+            <button class="assist-btn safe-btn" onclick="safeClick(this)"><img src="img/safe-btn-inactive.svg" alt=""></button>
+            <button class="assist-btn hint-btn" onclick="hintMode(this)"><img src="img/hint-btn-inactive.svg" alt=""></button>
+            <button class="assist-btn pause-btn" title="Pause Timer"><img src="img/pause-btn-inactive.svg" alt=""></button>
+            <button class="assist-btn undo-btn" onclick="undoMove()"><img src="img/undo-btn-inactive.svg" alt=""></button>
+            <button class="assist-btn kaboom-btn" onclick="randomMineEraser(gBoard, this)" disabled><img src="img/kaboom-btn-inactive.svg" alt=""></button>
 
-            <div><button class="assist-btn">Custom Board</button></div>
+            <div class="assist-rectangle-bar">
+                <button class="assist-rectangle-btn megahint-btn" onclick="megaHintMode(this)"><img src="img/megahint-rectangle-btn-inactive.svg" alt=""></button>
+                <button class="assist-rectangle-btn custom-btn" onclick="customMinesMode(this)"><img src="img/custom-rectangle-btn-inactive.svg" alt=""></button>
+            </div>
 
 
         </div>
@@ -63,6 +84,6 @@
     <script src="js/mine-sweeper.js"></script>
 </body>
 
-<footer>Made by: Moamen F.</footer>
+<footer>Made by: <span>Moamen F.</span></footer>
 
 </html>
