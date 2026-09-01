@@ -20,7 +20,7 @@
     --board-container-clr: #01050f;
     --board-container-custom-clr: #d6c509;
     --table-color: #1d202b;
-    --cell-nums-clr: #99eeee;
+    --cell-nums-clr: #61d9d9;
     --cell-unrevealed-before:linear-gradient(
         to bottom,
         #55a7ef,
@@ -60,8 +60,8 @@
     );
     --cell-unrevealed-safe-mode-before:linear-gradient(
         to bottom,
-        #4cce8d,
-        #188850
+        #5ceea5,
+        #35bb78
     );
     --cell-revealed: #151822;
     --cell-revealed-box-shadow: 
@@ -69,9 +69,14 @@
     inset -3px -3px 15px rgba(55, 93, 108, 0.4),
     inset 0 -1px 2px #677d85;
     --cell-revealed-mine-cell: #8e0909;
-    --num3-red: #EE7F8A;
-    --num2-green: #a0ee91;
-    --num4-pink: #E08DF9;
+    --num1-blue: #44dbdb;
+    --num2-green: #67d152;
+    --num3-red: #d96c77;
+    --num4-pink: #c365df;
+    --num5-brown: #d15f0e;
+    --num6-purple: #694cfa;
+    --num7-gray: #868787;
+    --num8-yellow: #808401;
     --flag-Mine-icons-clr: invert(0);
 
 }
@@ -85,7 +90,7 @@ body.light-mode {
     --board-container-clr: #484a4c;
     --board-container-custom-clr: #b4a508;
     --table-color: #3f4459;
-    --cell-nums-clr: #99eeee;
+    --cell-nums-clr: #61d9d9;
     --cell-unrevealed-before:linear-gradient(
         to bottom,
         #55a7ef,
@@ -134,13 +139,27 @@ body.light-mode {
         inset -3px -3px 15px rgba(55, 93, 108, 0.4),
         inset 0 -1px 2px #677d85;
     --cell-revealed-mine-cell: #8e0909;
-    --num3-red: #EE7F8A;
-    --num2-green: #a0ee91;
-    --num4-pink: #E08DF9;
+    --num1-blue: #44dbdb;
+    --num2-green: #67d152;
+    --num3-red: #d96c77;
+    --num4-pink: #c365df;
+    --num5-brown: #d15f0e;
+    --num6-purple: #694cfa;
+    --num7-gray: #868787;
+    --num8-yellow: #808401;
     --flag-Mine-icons-clr: invert(1);
 
 }
 
+.header {
+    margin: auto;
+}
+
+.header img {
+    display: block;
+    margin: auto;
+    width: 400px
+}
 
 body {
     font-family: 'Graphic-Light-Font';
@@ -288,7 +307,7 @@ body {
     align-items: center;
     justify-content: center;
     gap: 5px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     margin-top: 10px;
 
 }
@@ -344,9 +363,17 @@ body {
 
 
 .assist-bar {
+    max-width: 350px;
     margin: auto;
-    margin-top: 15px;
+    margin-top: 25px;
     align-items: center;
+}
+
+.assist-regular-btns {
+    display: flex;
+    justify-content: space-between;
+    margin: auto;
+
 }
 
 .assist-rectangle-bar {
@@ -365,7 +392,8 @@ body {
 }
 
 .assist-rectangle-btn {
-    width: 35%;
+    /* width: 35%; */
+    width: 100px;
     justify-content: space-between;
     background: none;
     border: none;
@@ -486,7 +514,7 @@ table {
 .cell {
     font-family: 'Singapore Sling Bold';
     font-size: 1.2rem;
-    color: var(--cell-nums-clr);
+    /* color: var(--cell-nums-clr); */
     place-items: center;
     text-align: center;
     width: 35px;
@@ -585,7 +613,8 @@ table {
 
 .cell-unrevealed.safe-mode::before {
 
-    background: var(--cell-unrevealed-safe-mode-before)
+    background: var(--cell-unrevealed-safe-mode-before);
+    border: 2px solid whitesmoke
 }
 
 
@@ -608,9 +637,31 @@ table {
     color: var(--num2-green);
 }
 
+.num1-blue {
+    color: var(--num1-blue);
+}
+
 .num4-pink {
     color: var(--num4-pink);
 }
+
+.num5-brown {
+    color: var(--num5-brown);
+}
+
+.num6-purple {
+    color: var(--num6-purple);
+}
+
+.num7-gray {
+    color: var(--num7-gray);
+}
+
+.num8-yellow {
+    color: var(--num8-yellow);
+}
+
+
 
 
 footer {

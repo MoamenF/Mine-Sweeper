@@ -9,10 +9,10 @@
 </head>
 
 <body onload="onInit()">
-    <h1>MINE SWEEPER</h1>
+    <div class="header"><img src="img/mine-sweeper-logo.png" alt=""></div>
     <div class="game-container">
 
-        <div class="theme"><button class="theme-btn" onclick="darkModeToggle(this)"><img src="img/dark-mode.svg" alt=""></button></div>
+        <div class="theme"><button class="theme-btn" onclick="darkModeToggle(this)"><img src="img/dark-mode-v2.svg" alt=""></button></div>
 
         <div class="timer"><span>00:00</span></div>
         <div class="levels-container">
@@ -64,11 +64,13 @@
         <div class="board-container"></div>
 
         <div class="assist-bar">
-            <button class="assist-btn safe-btn" onclick="safeClick(this)"><img src="img/safe-btn-inactive.svg" alt=""></button>
-            <button class="assist-btn hint-btn" onclick="hintMode(this)"><img src="img/hint-btn-inactive.svg" alt=""></button>
-            <button class="assist-btn pause-btn" title="Pause Timer"><img src="img/pause-btn-inactive.svg" alt=""></button>
-            <button class="assist-btn undo-btn" onclick="undoMove()"><img src="img/undo-btn-inactive.svg" alt=""></button>
-            <button class="assist-btn kaboom-btn" onclick="randomMineEraser(gBoard, this)" disabled><img src="img/kaboom-btn-inactive.svg" alt=""></button>
+            <div class="assist-regular-btns">
+                <button class="assist-btn safe-btn" onclick="safeClick(this)"><img src="img/safe-btn-inactive.svg" alt=""></button>
+                <button class="assist-btn hint-btn" onclick="hintMode(this)"><img src="img/hint-btn-inactive.svg" alt=""></button>
+                <button class="assist-btn pause-btn" onclick="pauseTimer()" title="Pause Timer"><img src="img/pause-btn-inactive.svg" alt=""></button>
+                <button class="assist-btn undo-btn" onclick="undoMove()"><img src="img/undo-btn-inactive.svg" alt=""></button>
+                <button class="assist-btn kaboom-btn" onclick="randomMineEraser(gBoard, this)" disabled><img src="img/kaboom-btn-inactive.svg" alt=""></button>
+            </div>
 
             <div class="assist-rectangle-bar">
                 <button class="assist-rectangle-btn megahint-btn" onclick="megaHintMode(this)"><img src="img/megahint-rectangle-btn-inactive.svg" alt=""></button>
