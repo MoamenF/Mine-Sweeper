@@ -532,8 +532,9 @@ table {
     font-family: 'Graphic-Bold-Font';
     font-size: 1.1rem;
     /* color: var(--cell-nums-clr); */
-    place-items: center;
+    /* place-items: center; */
     text-align: center;
+    vertical-align: middle;
     width: 35px;
     height: 35px;
     border-radius: 20%;
@@ -544,7 +545,8 @@ table {
 .cell-img {
     width: 55%;
     display: block;
-
+    height: auto;
+    margin: 0 auto;
 }
 
 .bomb-img {
@@ -731,4 +733,16 @@ footer span {
     height: 35px;
     border-radius: 50px;
     background: var(--play-again-modal);
+}
+
+.game-container.shake {
+    animation: shake 0.4s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% {transform: translateX(0);}
+    20% {transform: translateX(-10px);}
+    40% {transform: translateX(10px);}
+    60% {transform: translateX(-6px);}
+    80% {transform: translateX(6px);}
 }

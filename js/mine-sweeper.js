@@ -40,6 +40,8 @@ var gCustomMinesMode = {
 
 }
 
+var gIsKaboomBtnActive = false
+
 
 var gMineCells = []
 var gRevealedCells = []
@@ -50,7 +52,7 @@ var gRemainingLives = 3
 var gUnrevealedTimeOut
 
 var gStartTime
-var gTimeInterval
+var gTimeInterval = null
 var gTimeIsPaused = false
 
 var gIsDarkMode = true  
@@ -62,7 +64,6 @@ var gIsPlayerWon = null
 function onInit() {
     gBoard = buildBoard()
     renderBoard(gBoard)
-    displayFlagsMinesCount()
     showBestTime()
 }
 
@@ -76,7 +77,6 @@ function buildBoard() {
         for (var j = 0; j < gLevel.SIZE; j++) {
             board[i][j] = { minesAroundCount: 0, isRevealed: false, isMine: false, isMarked: false }
 
-            // if (i === 1 && j === 0 || i === 3 && j === 3) board[i][j].isMine = true
         }
     }
     console.table(board)
@@ -95,7 +95,7 @@ function renderBoard(board) {
             cell.minesAroundCount = minesNegsCount ? minesNegsCount : EMPTY
 
             var cellNumClr = 'num1-blue'
-            
+            // add class to var name
             if (cell.minesAroundCount === 2) {
                 cellNumClr = 'num2-green'
             
@@ -164,6 +164,7 @@ function onCellClicked(elCell, i, j) {
 
     if (gTimeIsPaused) {
         resumeTimer()
+        gTimeIsPaused = false
     }
     //* Custom mode //
     if (gCustomMinesMode.isCustomActive) {
@@ -187,6 +188,7 @@ function onCellClicked(elCell, i, j) {
             gCustomMinesMode.isCustomActive = false
             gIsFirstClick = false
             gCustomMinesMode.isFirstClick = true
+            customMineDisableButtons()
             toggleCustomMode()
             return
         } 
@@ -195,11 +197,11 @@ function onCellClicked(elCell, i, j) {
     document.querySelector('.custom-btn').disabled = true
     
     if (cell.isRevealed) return
-    document.querySelector('.kaboom-btn').disabled = false
     
     if (gCustomMinesMode.isFirstClick) {
         gGame.isOn = true
         startTimer()
+        document.querySelector('.kaboom-btn').disabled = false
         gCustomMinesMode.isFirstClick = false
     }
 
@@ -209,7 +211,9 @@ function onCellClicked(elCell, i, j) {
         gGame.isOn = true
         startTimer()
         setRandomMines(i, j)
+        displayFlagsMinesCount()
         renderBoard(gBoard)
+        document.querySelector('.kaboom-btn').disabled = false
         gIsFirstClick = false
 
     }
@@ -244,7 +248,9 @@ function onCellClicked(elCell, i, j) {
             return
         }
         
+        
         cell.isRevealed = true
+        if (cell.isMine) shakeAnimation()
         if (!cell.isMine) gRevealedCells.push(cell)
         gGame.revealedCount++
         checkGameOver(i, j)
@@ -387,17 +393,14 @@ function resetGame() {
     if (gCurrLevel === 'beginner') {
         gLevel.SIZE = 4
         gLevel.MINES = 2
-        gGame.markedCount = gLevel.MINES
 
     } else if (gCurrLevel === 'intermediate') {
         gLevel.SIZE = 8
         gLevel.MINES = 14
-        gGame.markedCount = gLevel.MINES
 
     } else if (gCurrLevel === 'expert') {
         gLevel.SIZE = 12
         gLevel.MINES = 32
-        gGame.markedCount = gLevel.MINES
     }
 
     for (var idx = 0; idx < elHearts.length; idx++) {
@@ -412,8 +415,12 @@ function resetGame() {
     gIsFirstClick = true
     gGame.isOn = false
     gMineCells = []
-    clearInterval(gTimeInterval)
+    // gIsPlayerWon = null 
     clearTimeout(gUnrevealedTimeOut)
+    clearInterval(gTimeInterval)
+    gTimeInterval = null
+    gGame.secsPassed = 0
+    gTimeIsPaused = false
     elTimer.innerText = '00:00'
     resetButtons()
     onInit()
@@ -422,6 +429,7 @@ function resetGame() {
 //* Timer //
 
 function startTimer() {
+    if (gTimeInterval !== null) return
     gStartTime = Date.now()
 
     gTimeInterval = setInterval(() => {
@@ -585,7 +593,7 @@ function undoMove() {
 //* KABOOM Button //
 
 function randomMineEraser(board, elBtn) {
-
+    
     if (gCurrLevel === 'beginner') {
         var count = 1
     } else count = 3
@@ -606,7 +614,7 @@ function randomMineEraser(board, elBtn) {
             renderBoard(gBoard)
         }
     }
-
+    displayFlagsMinesCount()
     elBtn.disabled = true
 }
 
@@ -709,9 +717,12 @@ function darkModeToggle(elBtn) {
 function pauseTimer() {
     gTimeIsPaused = true
     clearInterval(gTimeInterval)
+    gTimeInterval = null
 }
 
 function resumeTimer() {
+
+    if (gTimeInterval) clearInterval(gTimeInterval)
     gStartTime = Date.now()
     var milliSecs = gGame.secsPassed * 1000
     gTimeInterval = setInterval(() => {
@@ -790,7 +801,7 @@ function resetButtons() {
     //? Custom Mode Button //
     document.querySelector('.board-container').classList.remove('custom-mode')
     gCustomMinesMode.isCustomActive = false
-    gCustomMinesMode.isFirstClick = true
+    // gCustomMinesMode.isFirstClick = true
     gCustomMinesMode.selectedMinesCells = []
     document.querySelector('.custom-btn').disabled = false  
 
@@ -842,7 +853,15 @@ function customMineDisableButtons() {
     }
 }
 
+function shakeAnimation(){
+    const gameContainer = document.querySelector('.game-container')
+
+    gameContainer.classList.remove('shake')
+    void gameContainer.offsetWidth
+    gameContainer.classList.add('shake')
+}
+
 function displayFlagsMinesCount () {
-    document.querySelector('.bomb-count-icon span').innerText = gLevel.MINES
-    document.querySelector('.flag-count-icon span').innerText = gLevel.MINES
+    document.querySelector('.bomb-count-icon span').innerText = gMineCells.length ? gMineCells.length : gCustomMinesMode.selectedMinesCells.length
+    document.querySelector('.flag-count-icon span').innerText = gGame.markedCount
 }
