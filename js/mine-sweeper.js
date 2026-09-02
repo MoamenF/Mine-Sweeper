@@ -55,6 +55,7 @@ var gTimeIsPaused = false
 
 var gIsDarkMode = true  
 
+var gIsPlayerWon = null
 
 
 
@@ -164,6 +165,7 @@ function onCellClicked(elCell, i, j) {
     if (gTimeIsPaused) {
         resumeTimer()
     }
+    //* Custom mode //
     if (gCustomMinesMode.isCustomActive) {
         if (cell.isMine) {
             cell.isMine = false
@@ -190,7 +192,8 @@ function onCellClicked(elCell, i, j) {
         } 
 
     } 
-
+    document.querySelector('.custom-btn').disabled = true
+    
     if (cell.isRevealed) return
     document.querySelector('.kaboom-btn').disabled = false
     
@@ -212,8 +215,8 @@ function onCellClicked(elCell, i, j) {
     }
     if (!gGame.isOn) return
 
+     //* Hint Button  //
     if (gHintBtn.isHintBtnActive && !cell.isRevealed && !cell.isMarked) {
-
         gHintBtn.isHintBtnActive = false
         document.querySelector('.hint-btn').disabled = true
         displayAndHideHintCellNegs(i, j, gBoard)
@@ -221,16 +224,15 @@ function onCellClicked(elCell, i, j) {
         return
     }
 
+     //* Mega-Hint Button //
     if (gMegaHint.isMegaHintActive) {
         gMegaHint.megaHintSelectedCells.push({i, j})
         megaHintSelectedCells()
         if (gMegaHint.megaHintSelectedCells.length === 2) {
             document.querySelector('.megahint-btn').disabled = true
             displaySelectedArea()
-
             return
         }
-
         return
     }
 
@@ -247,6 +249,7 @@ function onCellClicked(elCell, i, j) {
         gGame.revealedCount++
         checkGameOver(i, j)
     }
+    console.log('gGame:', gGame)
     renderBoard(gBoard)
 }
 
@@ -260,7 +263,7 @@ function onCellMarked(elCell, i, j, ev) {
     cell.isMarked ? gGame.markedCount++ : gGame.markedCount--
     elFlag.innerText = gGame.markedCount
     checkGameOver(i, j)
-
+    console.log('gGame:', gGame)
     renderBoard(gBoard)
 }
 
@@ -274,12 +277,10 @@ function checkGameOver(cellI, cellJ) {
             elHearts[gRemainingLives - 1].classList.add('hidden') 
             gRemainingLives--
             
-            clearTimeout(gUnrevealedTimeOut)
-            
+            // clearTimeout(gUnrevealedTimeOut)
             gUnrevealedTimeOut = setTimeout(() => {
                 cell.isRevealed = false
                 renderBoard(gBoard)
-                
             }, 500);
             
             gGame.revealedCount--
@@ -297,8 +298,7 @@ function checkGameOver(cellI, cellJ) {
             for (var i = 0; i < gCustomMinesMode.selectedMinesCells.length; i++) {
 
                 var customMineCell = gCustomMinesMode.selectedMinesCells[i]
-                var CustommineCell = gBoard[customMineCell.i][customMineCell.j]
-                CustommineCell.isRevealed = true
+                customMineCell.isRevealed = true
             }
         }
 
@@ -306,6 +306,9 @@ function checkGameOver(cellI, cellJ) {
         clearInterval(gTimeInterval)
         document.querySelector('.smiley-btn img').src = 'img/angry-smiley.png'
         console.log('YOU FAILED!')
+        console.log('gGame:', gGame)
+        gIsPlayerWon = false
+        showResult(gIsPlayerWon)
         return
     }
 
@@ -313,15 +316,17 @@ function checkGameOver(cellI, cellJ) {
     var mineCells = customMines.length ? customMines : gMineCells
 
     if (gGame.revealedCount === (gLevel.SIZE ** 2) - mineCells.length && 
-        gGame.markedCount === gMineCells.length || customMines.length) {
+        gGame.markedCount === mineCells.length) {
+
         gGame.isOn = false
         clearInterval(gTimeInterval)
         saveBestTime()
 
         document.querySelector('.smiley-btn img').src = 'img/happy-open-mouth-smiley.png'
-
         console.log('YOU WON!')
-
+        console.log('gGame:', gGame)
+        gIsPlayerWon = true
+        showResult(gIsPlayerWon)
         return
     }
 }
@@ -343,7 +348,6 @@ function expandReveal(board, elCell, cellI, cellJ) {
             gGame.revealedCount++
 
             if (!cell.minesAroundCount) {
-                // gisLastMoveRecursion = true
                 expandReveal(board, elCell, i, j)
             }
         }
@@ -352,16 +356,14 @@ function expandReveal(board, elCell, cellI, cellJ) {
 
 
 function setRandomMines(cellI, cellJ) {
-    // var minesCount = 0
+
     for (var i = 0; i < gLevel.MINES; i++) {
         
         var pos = findEmptyPos(cellI, cellJ)
         if(!pos) return
         gBoard[pos.i][pos.j].isMine = true
         gMineCells.push(gBoard[pos.i][pos.j])
-        // minesCount++ 
     }
-    // renderBoard(gBoard)
 }
 
 function setGameLevel(elBtn) {
@@ -402,12 +404,16 @@ function resetGame() {
         var elHeart = elHearts[idx]
         elHeart.classList.remove('hidden')
     }
+
+    document.querySelector('.smiley-btn img').src = 'img/happy-closed-mouth-smiley.png'
     gRemainingLives = 3
     gGame.revealedCount = 0
+    gGame.markedCount = 0
     gIsFirstClick = true
     gGame.isOn = false
     gMineCells = []
     clearInterval(gTimeInterval)
+    clearTimeout(gUnrevealedTimeOut)
     elTimer.innerText = '00:00'
     resetButtons()
     onInit()
@@ -463,6 +469,7 @@ function showBestTime() {
 function hintMode(elBtn) {
 
     gHintBtn.isHintBtnActive = !gHintBtn.isHintBtnActive
+    hintDisableButtons()
     renderBoard(gBoard)
 
     if (gHintBtn.isHintBtnActive) {
@@ -529,20 +536,28 @@ function safeClick(elBtn) {
 }
 
 function displaySafeCell(gBoard) {
-
     var safeCells = []
+
     for (var i = 0; i < gBoard.length; i++) {
         for (var j = 0; j < gBoard.length; j++) {
-            var cell = {i, j}
+
+            var cell = gBoard[i][j]
+            cell.location = {i, j}
 
             if (!cell.isRevealed && !cell.isMine && !cell.isMarked) {
                 safeCells.push(cell)
             }
         }
     }
+
+    if (safeCells.length === 0) {
+        document.querySelector('.safe-btn').disabled = true
+        return
+    }
+
     var randIdx = getRandomInt(0, safeCells.length)
     var safeCell = safeCells[randIdx]
-    var cellClassName = getClassName(safeCell)
+    var cellClassName = getClassName(safeCell.location)
     var elSafeCell = document.querySelector(cellClassName)
     elSafeCell.classList.add('safe-mode')
 
@@ -600,6 +615,7 @@ function randomMineEraser(board, elBtn) {
 
 function megaHintMode(elBtn) {
     gMegaHint.isMegaHintActive = !gMegaHint.isMegaHintActive
+    megaHintDisableButtons()
     renderBoard(gBoard)
 }
 
@@ -649,6 +665,7 @@ function displaySelectedArea() {
 
 function customMinesMode(elBtn) {
     gCustomMinesMode.isCustomActive = !gCustomMinesMode.isCustomActive
+    customMineDisableButtons()
     toggleCustomMode()
 }
 
@@ -713,7 +730,35 @@ function resumeTimer() {
 }
 
 
-//*------------------------//
+//*---------------------------------------------------------------------------------//
+
+function showResult(isPlayerWon) {
+    const title = document.querySelector('.modal-title')
+    const message = document.querySelector('.modal-message')
+
+    if (isPlayerWon) {
+        title.innerText = 'You Won!'
+        message.innerText = 'Congratulations, you completed this level!'
+    
+    } else {
+        title.innerText = 'You Lost!'
+        message.innerText = 'Good try! Play again and try to win.'
+    }
+    modal.showModal()
+}
+
+const modal = document.querySelector('.modal')
+
+const playAgainBtn = document.querySelector('.play-again-btn')
+playAgainBtn.addEventListener("click", () => {
+    modal.close()
+    resetGame()
+})
+
+const closeModalBtn = document.querySelector('.close-modal')
+closeModalBtn.addEventListener("click", () => {
+    modal.close()
+})
 
 function resetButtons() {
     //? Safe Button //
@@ -747,11 +792,54 @@ function resetButtons() {
     gCustomMinesMode.isCustomActive = false
     gCustomMinesMode.isFirstClick = true
     gCustomMinesMode.selectedMinesCells = []
+    document.querySelector('.custom-btn').disabled = false  
 
     //? Mega-Hint Mode Button //
     gMegaHint.isMegaHintActive = false
     gMegaHint.megaHintSelectedCells = []
     document.querySelector('.megahint-btn').disabled = false
+}
+
+function megaHintDisableButtons() {
+        if (gMegaHint.isMegaHintActive){
+        document.querySelector('.safe-btn').disabled = true
+        document.querySelector('.hint-btn').disabled = true
+        document.querySelector('.custom-btn').disabled = true
+        document.querySelector('.undo-btn').disabled = true
+    }else {
+        document.querySelector('.safe-btn').disabled = false
+        document.querySelector('.hint-btn').disabled = false
+        document.querySelector('.custom-btn').disabled = false
+        document.querySelector('.undo-btn').disabled = false
+    }
+}
+
+function hintDisableButtons() {
+        if (gHintBtn.isHintBtnActive){
+        document.querySelector('.safe-btn').disabled = true
+        document.querySelector('.megahint-btn').disabled = true
+        document.querySelector('.custom-btn').disabled = true
+        document.querySelector('.undo-btn').disabled = true
+    }else {
+        document.querySelector('.safe-btn').disabled = false
+        document.querySelector('.megahint-btn').disabled = false
+        document.querySelector('.custom-btn').disabled = false
+        document.querySelector('.undo-btn').disabled = false
+    }
+}
+
+function customMineDisableButtons() {
+        if (gCustomMinesMode.isCustomActive){
+        document.querySelector('.safe-btn').disabled = true
+        document.querySelector('.megahint-btn').disabled = true
+        document.querySelector('.hint-btn').disabled = true
+        document.querySelector('.undo-btn').disabled = true
+    }else {
+        document.querySelector('.safe-btn').disabled = false
+        document.querySelector('.megahint-btn').disabled = false
+        document.querySelector('.hint-btn').disabled = false
+        document.querySelector('.undo-btn').disabled = false
+    }
 }
 
 function displayFlagsMinesCount () {

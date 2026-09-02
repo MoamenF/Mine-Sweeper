@@ -78,7 +78,11 @@
     --num7-gray: #868787;
     --num8-yellow: #808401;
     --flag-Mine-icons-clr: invert(0);
-
+    --modal-bg: #a1cdf6;
+    --modal-border: #f7b50eb8;
+    --close-modal: #6b8794;
+    --play-again-modal: #f1ce4d;
+    --modal-text-clr: rgb(36, 36, 36);
 }
 
 
@@ -148,6 +152,12 @@ body.light-mode {
     --num7-gray: #868787;
     --num8-yellow: #808401;
     --flag-Mine-icons-clr: invert(1);
+    --modal-bg: #04192d;
+    --modal-border: #f7b50eb8;
+    --close-modal: #6b8794;
+    --play-again-modal: #f1ce4d;
+    --modal-text-clr: whitesmoke;
+
 
 }
 
@@ -438,8 +448,15 @@ body {
     content: url("../img/pause-btn-active.svg");
 }
 
-.undo-btn:active img {
+.undo-btn:not(:disabled):active img {
     content: url("../img/undo-btn-active.svg");
+}
+.undo-btn:disabled img {
+    content: url("../img/undo-btn-off.svg");
+    filter: grayscale(.7);
+}
+.undo-btn:disabled {
+    cursor: not-allowed;
 }
 
 
@@ -512,8 +529,8 @@ table {
 }
 
 .cell {
-    font-family: 'Singapore Sling Bold';
-    font-size: 1.2rem;
+    font-family: 'Graphic-Bold-Font';
+    font-size: 1.1rem;
     /* color: var(--cell-nums-clr); */
     place-items: center;
     text-align: center;
@@ -579,7 +596,8 @@ table {
 
 .cell-unrevealed.hint-mode::before {
 
-    border: 2px solid var(--cell-unrevealed-hint-mode-before)
+    border: 3px solid var(--cell-unrevealed-hint-mode-before)
+    
 }
 
 .cell-unrevealed.hint-mode:hover::before {
@@ -591,11 +609,15 @@ table {
     
     background: var(--cell-unrevealed-megahint-mode-before)
 
-    /* border: 2px solid #8fc9d2eb; */
 }
 
 .megahint-mode {
     border: 2px solid var(--megahint-mode);
+    
+    box-shadow: 
+    0 0 2px var(--megahint-mode),
+    0 0 4px var(--megahint-mode)
+    ;
 }
 
 .cell-unrevealed.megahint-selected-cell::before {
@@ -662,12 +684,51 @@ table {
 }
 
 
-
-
 footer {
     margin-top: 22px;
 }
 
 footer span {
     font-family: 'Graphic-Bold-Font';
+}
+
+.modal {
+    /* width: min(90%, 420px); */
+    color: var(--modal-text-clr);
+    position: relative;
+    padding: 20px;
+    top: 125px;
+    border: 2px solid var(--modal-border);
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(241, 225, 1, 0.458);
+    background: var(--modal-bg) ;
+
+}
+
+.modal-title {
+    font-family: Graphic-Bold-Font;
+}
+
+.modal::backdrop {
+    background: rgb(0, 0, 0, 40%);
+    backdrop-filter: blur(1px);
+}
+
+.close-modal {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    border: none;
+    background: transparent;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--close-modal);
+}
+
+.play-again-btn {
+    font-family: 'Graphic-Bold-Font';
+    width: 100px;
+    height: 35px;
+    border-radius: 50px;
+    background: var(--play-again-modal);
 }
